@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Orçamentos - Profissional</title>
+    <title>Plataforma de Orçamentos</title>
     <style>
         :root {
             --bg-body: #0f172a;
@@ -14,7 +14,6 @@
             --accent: #10b981;
             --text: #f8fafc;
             --text-dim: #94a3b8;
-            --danger: #ef4444;
         }
 
         body {
@@ -22,10 +21,8 @@
             color: var(--text);
             font-family: 'Inter', sans-serif;
             display: flex;
-            flex-direction: column; /* Alinha container e footer verticalmente */
-            align-items: center;
+            justify-content: center;
             padding: 40px;
-            min-height: 100vh;
         }
 
         .container {
@@ -33,7 +30,6 @@
             gap: 25px;
             max-width: 1200px;
             width: 100%;
-            flex: 1; /* Empurra o footer para baixo */
         }
 
         .calculadora { flex: 2; }
@@ -45,50 +41,16 @@
             margin-bottom: 20px;
         }
 
-
-
-        header {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #334155;
-           
-        }
-
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-img {
-            height: 200px; /* Ajuste conforme o tamanho do seu logo */
-            width: auto;
-        }
-
-        .header-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-
         h3 { margin: 0 0 15px 0; color: var(--text-dim); font-size: 1rem; }
 
-        /* Estilo dos Inputs maiores */
         input[type="text"] {
             width: 100%;
-            padding: 18px; 
+            padding: 14px;
             border-radius: 8px;
             border: 1px solid #334155;
             background: var(--input-bg);
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             box-sizing: border-box;
         }
 
@@ -102,43 +64,16 @@
             border-radius: 8px;
         }
 
-        /* Checkbox Vermelho */
-        .servico-check {
-            appearance: none;
-            width: 28px;
-            height: 28px;
-            border: 2px solid #334155;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            background: var(--input-bg);
-        }
-
-        .servico-check:checked {
-            background-color: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .servico-check:checked::after {
-            content: '✔';
-            position: absolute;
-            color: white;
-            font-size: 18px;
-            left: 5px;
-            top: 0px;
-        }
-
         .label-preco { color: var(--accent); font-weight: 500; margin-left: 8px; }
 
         .controles { display: flex; align-items: center; gap: 12px; }
         .btn-qty {
-            background: var(--danger); border: none; color: white;
-            width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+            background: #ef4444; border: none; color: white;
+            width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
             font-weight: bold;
         }
         .btn-qty.plus { background: var(--accent); }
-        .qty-val { width: 40px; text-align: center; background: transparent; border: none; color: white; font-size: 1.1rem; }
+        .qty-val { width: 35px; text-align: center; background: transparent; border: none; color: white; font-size: 1rem; }
 
         .resumo {
             flex: 1;
@@ -179,42 +114,17 @@
         }
         .tag.active { border-color: var(--primary); color: var(--primary); background: rgba(59, 130, 246, 0.1); }
 
+        .total-label { color: var(--text); margin-top: 25px; font-weight: bold; }
         .total-valor { font-size: 2.2rem; color: var(--accent); font-weight: bold; margin-top: 5px; }
-
-        /* Estilo do Footer Corrigido */
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-            border-top: 1px solid #334155;
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .dev-name {
-            color: var(--accent);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
     </style>
 </head>
 <body>
-
-    <header>
-    <div class="header-logo">
-        <img src="logo_game.png" alt="Logo Rise Custom" class="logo-img">
-      <!--  <h1 class="header-title">Rise Custom</h1>-->
-    </div>
-</header>
 
 <div class="container">
     <div class="calculadora">
         <div class="section">
             <h3>1. Valor Base</h3>
-            <input type="text" id="valorBase" placeholder="0" oninput="mascaraNumeroLimpo(this)">
+            <input type="text" id="valorBase" placeholder="R$ 0,00" oninput="mascaraMoeda(this)">
         </div>
 
         <div class="section">
@@ -243,6 +153,7 @@
 
         <div class="section">
             <h3>🛒 3. Produtos</h3>
+
             <div class="item-linha">
                 <span>Kit Reparo Comum <span class="label-preco">R$ 5.000,00</span></span>
                 <div class="controles">
@@ -251,6 +162,7 @@
                     <button class="btn-qty plus" onclick="alterarQty('qtyKitComum', 1)">+</button>
                 </div>
             </div>
+
             <div class="item-linha">
                 <span>Kit Avançado <span class="label-preco">R$ 10.000,00</span></span>
                 <div class="controles">
@@ -259,20 +171,22 @@
                     <button class="btn-qty plus" onclick="alterarQty('qtyKitAvancado', 1)">+</button>
                 </div>
             </div>
+
+            <div class="item-linha">
+                <span>Pneus <span class="label-preco">R$ 1.000,00</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyPneusProd', -1)">-</button>
+                    <input type="number" id="qtyPneusProd" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyPneusProd', 1)">+</button>
+                </div>
+            </div>
+
             <div class="item-linha">
                 <span>Chave Inglesa <span class="label-preco">R$ 10.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyChave', -1)">-</button>
                     <input type="number" id="qtyChave" class="qty-val" value="0" readonly>
                     <button class="btn-qty plus" onclick="alterarQty('qtyChave', 1)">+</button>
-                </div>
-            </div>
-            <div class="item-linha">
-                <span>Macaco Hidráulico <span class="label-preco">R$ 10.000,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyMacaco', -1)">-</button>
-                    <input type="number" id="qtyMacaco" class="qty-val" value="0" readonly>
-                    <button class="btn-qty plus" onclick="alterarQty('qtyMacaco', 1)">+</button>
                 </div>
             </div>
         </div>
@@ -284,12 +198,11 @@
             <span>Valor Base:</span>
             <span id="resBase">R$ 0,00</span>
         </div>
-        
         <div class="resumo-item" id="linhaAcrescimo" style="display: none; color: var(--primary);">
             <span id="labelAcrescimo">Acréscimo (0%):</span>
             <span id="resAcrescimo">R$ 0,00</span>
         </div>
-
+        
         <div class="resumo-item">
             <span>Serviços:</span>
             <span id="resServicos">R$ 0,00</span>
@@ -300,40 +213,39 @@
         </div>
 
         <button id="btnParceria" class="btn-parceria" onclick="toggleParceria()">Ativar Parceria</button>
-         <p style="font-size: 0.7rem; color: var(--text-dim); line-height: 1.4;">
-            Ativar a Parceria: Acréscimo de 15% no valor base + R$ 2.000 de desconto em todos os serviços e produtos.
+        <p style="font-size: 0.7rem; color: var(--text-dim); line-height: 1.4;">
+            Acréscimo de 15% no valor base + R$ 2.000 de desconto em todos os serviços e produtos.
         </p>
-        
+
         <h3 style="margin-top: 20px; font-size: 0.8rem;">Acréscimo (apenas valor base):</h3>
         <div class="promo-tags">
             <div class="tag" id="tag15" onclick="setAcrescimo(0.15)">PROMO 15%</div>
             <div class="tag" id="tag25" onclick="setAcrescimo(0.25)">25%</div>
         </div>
 
-        <div class="total-label" style="margin-top:20px; font-weight:bold;">Total:</div>
+        <div class="total-label">Total:</div>
         <div class="total-valor" id="totalFinal">R$ 0,00</div>
     </div>
 </div>
-
-<footer>
-    <p>Projeto Exclusivo &copy; 2026 | Desenvolvido com muita dedicação por 
-       <span class="dev-name">Reginaldo Souza</span>
-    </p>
-</footer>
 
 <script>
     let parceriaAtiva = false;
     let percentualAcrescimoExtra = 0;
 
-    // Nova máscara solicitada pelo cliente (apenas números)
-    function mascaraNumeroLimpo(input) {
-        input.value = input.value.replace(/\D/g, "");
+    function mascaraMoeda(input) {
+        let valor = input.value.replace(/\D/g, "");
+        valor = (valor / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        });
+        input.value = valor;
         calcular();
     }
 
     function converterParaNumero(string) {
         if (!string) return 0;
-        return parseInt(string.replace(/\D/g, "")) || 0;
+        let num = string.replace(/[^\d,]/g, "").replace(",", ".");
+        return parseFloat(num) || 0;
     }
 
     function formatarMoeda(valor) {
@@ -363,44 +275,43 @@
     }
 
     function calcular() {
+        // 1. Valor Base
         let baseOriginal = converterParaNumero(document.getElementById('valorBase').value);
-        
-        let baseParaCalculo = baseOriginal;
-        if (parceriaAtiva) baseParaCalculo *= 1.15;
+        let baseCalculada = baseOriginal;
+        baseCalculada += (baseOriginal * percentualAcrescimoExtra);
+        if (parceriaAtiva) baseCalculada *= 1.15;
 
-        let valorAcrescimo = baseOriginal * percentualAcrescimoExtra;
-        const linha = document.getElementById('linhaAcrescimo');
-        if (valorAcrescimo > 0) {
-            linha.style.display = 'flex';
-            document.getElementById('labelAcrescimo').innerText = `Acréscimo (${percentualAcrescimoExtra * 100}%):`;
-            document.getElementById('resAcrescimo').innerText = formatarMoeda(valorAcrescimo);
-        } else {
-            linha.style.display = 'none';
-        }
-
+        // 2. Serviços
         let totalServicos = 0;
         document.querySelectorAll('.servico-check:checked').forEach(el => {
             totalServicos += parseFloat(el.dataset.preco);
         });
+        // Troca de Pneus (Serviço) - R$ 1.000,00
         totalServicos += (parseInt(document.getElementById('qtyTrocaPneu').value) * 1000);
 
-        let totalProdutos = (parseInt(document.getElementById('qtyKitComum').value) * 5000) +
-                           (parseInt(document.getElementById('qtyKitAvancado').value) * 10000) +
-                           (parseInt(document.getElementById('qtyChave').value) * 10000) +
-                           (parseInt(document.getElementById('qtyMacaco').value) * 10000);
+        // 3. Produtos (Cálculo individual por ID)
+        let totalKitComum = (parseInt(document.getElementById('qtyKitComum').value) * 5000);
+        let totalKitAvancado = (parseInt(document.getElementById('qtyKitAvancado').value) * 10000);
+        let totalPneusProd = (parseInt(document.getElementById('qtyPneusProd').value) * 1000);
+        let totalChave = (parseInt(document.getElementById('qtyChave').value) * 10000);
+        
+        let totalProdutos = totalKitComum + totalKitAvancado + totalPneusProd + totalChave;
 
+        // Regra de Desconto da Parceria
         let subtotalItens = totalServicos + totalProdutos;
         if (parceriaAtiva && subtotalItens > 0) {
-            subtotalItens = Math.max(0, subtotalItens - 2000);
+            subtotalItens = Math.max(0, subtotalItens + 2000);
         }
 
-        let totalFinal = baseParaCalculo + valorAcrescimo + subtotalItens;
+        let totalFinal = baseCalculada + subtotalItens;
 
-        document.getElementById('resBase').innerText = formatarMoeda(baseParaCalculo);
+        // Atualizar Interface
+        document.getElementById('resBase').innerText = formatarMoeda(baseCalculada);
         document.getElementById('resServicos').innerText = formatarMoeda(totalServicos);
         document.getElementById('resProdutos').innerText = formatarMoeda(totalProdutos);
         document.getElementById('totalFinal').innerText = formatarMoeda(totalFinal);
     }
 </script>
+
 </body>
 </html>
