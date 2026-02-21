@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Orçamentos</title>
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-item: #1e2533;
+            --input-bg: #111827;
+            --primary: #3b82f6;
+            --accent: #10b981;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            display: flex;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .calculadora { flex: 2; }
+
+        .section {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        h3 { margin: 0 0 15px 0; color: var(--text-dim); font-size: 1rem; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: var(--input-bg);
+            color: white;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+        }
+
+        .item-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-item);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .label-preco { color: var(--accent); font-weight: 500; margin-left: 8px; }
+
+        .controles { display: flex; align-items: center; gap: 12px; }
+        .btn-qty {
+            background: #ef4444; border: none; color: white;
+            width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-qty.plus { background: var(--accent); }
+        .qty-val { width: 35px; text-align: center; background: transparent; border: none; color: white; font-size: 1rem; }
+
+        .resumo {
+            flex: 1;
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .resumo-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .btn-parceria {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .btn-parceria.active { background: var(--primary); }
+
+        .promo-tags { display: flex; gap: 8px; margin-top: 15px; }
+        .tag {
+            background: #334155; padding: 6px 12px; border-radius: 4px;
+            font-size: 0.75rem; cursor: pointer; border: 1px solid transparent;
+            color: var(--text-dim);
+        }
+        .tag.active { border-color: var(--primary); color: var(--primary); background: rgba(59, 130, 246, 0.1); }
+
+        .total-label { color: var(--text); margin-top: 25px; font-weight: bold; }
+        .total-valor { font-size: 2.2rem; color: var(--accent); font-weight: bold; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="calculadora">
+        <div class="section">
+            <h3>1. Valor Base</h3>
+            <input type="text" id="valorBase" placeholder="R$ 0,00" oninput="mascaraMoeda(this)">
+        </div>
+
+        <div class="section">
+            <h3>🚘 2. Serviços</h3>
+            <div class="item-linha">
+                <span>Reparo Interno <span class="label-preco">R$ 5.000,00</span></span>
+                <input type="checkbox" class="servico-check" data-preco="5000" onclick="calcular()">
+            </div>
+            <div class="item-linha">
+                <span>Troca de Pneus <span class="label-preco">R$ 1.000,00/un</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyTrocaPneu', -1)">-</button>
+                    <input type="number" id="qtyTrocaPneu" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyTrocaPneu', 1)">+</button>
+                </div>
+            </div>
+            <div class="item-linha">
+                <span>Reparo Sul <span class="label-preco">R$ 7.000,00</span></span>
+                <input type="checkbox" class="servico-check" data-preco="7000" onclick="calcular()">
+            </div>
+            <div class="item-linha">
+                <span>Reparo Norte <span class="label-preco">R$ 10.000,00</span></span>
+                <input type="checkbox" class="servico-check" data-preco="10000" onclick="calcular()">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🛒 3. Produtos</h3>
+
+            <div class="item-linha">
+                <span>Kit Reparo Comum <span class="label-preco">R$ 5.000,00</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyKitComum', -1)">-</button>
+                    <input type="number" id="qtyKitComum" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyKitComum', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="item-linha">
+                <span>Kit Avançado <span class="label-preco">R$ 10.000,00</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyKitAvancado', -1)">-</button>
+                    <input type="number" id="qtyKitAvancado" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyKitAvancado', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="item-linha">
+                <span>Pneus <span class="label-preco">R$ 1.000,00</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyPneusProd', -1)">-</button>
+                    <input type="number" id="qtyPneusProd" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyPneusProd', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="item-linha">
+                <span>Chave Inglesa <span class="label-preco">R$ 10.000,00</span></span>
+                <div class="controles">
+                    <button class="btn-qty" onclick="alterarQty('qtyChave', -1)">-</button>
+                    <input type="number" id="qtyChave" class="qty-val" value="0" readonly>
+                    <button class="btn-qty plus" onclick="alterarQty('qtyChave', 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="resumo">
+        <h3>Resumo do Orçamento</h3>
+        <div class="resumo-item">
+            <span>Valor Base:</span>
+            <span id="resBase">R$ 0,00</span>
+        </div>
+        <div class="resumo-item">
+            <span>Serviços:</span>
+            <span id="resServicos">R$ 0,00</span>
+        </div>
+        <div class="resumo-item">
+            <span>Produtos:</span>
+            <span id="resProdutos">R$ 0,00</span>
+        </div>
+
+        <button id="btnParceria" class="btn-parceria" onclick="toggleParceria()">Ativar Parceria</button>
+        <p style="font-size: 0.7rem; color: var(--text-dim); line-height: 1.4;">
+            Acréscimo de 15% no valor base + R$ 2.000 de desconto em todos os serviços e produtos.
+        </p>
+
+        <h3 style="margin-top: 20px; font-size: 0.8rem;">Acréscimo (apenas valor base):</h3>
+        <div class="promo-tags">
+            <div class="tag" id="tag15" onclick="setAcrescimo(0.15)">PROMO 15%</div>
+            <div class="tag" id="tag25" onclick="setAcrescimo(0.25)">25%</div>
+        </div>
+
+        <div class="total-label">Total:</div>
+        <div class="total-valor" id="totalFinal">R$ 0,00</div>
+    </div>
+</div>
+
+<script>
+    let parceriaAtiva = false;
+    let percentualAcrescimoExtra = 0;
+
+    function mascaraMoeda(input) {
+        let valor = input.value.replace(/\D/g, "");
+        valor = (valor / 100).toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        });
+        input.value = valor;
+        calcular();
+    }
+
+    function converterParaNumero(string) {
+        if (!string) return 0;
+        let num = string.replace(/[^\d,]/g, "").replace(",", ".");
+        return parseFloat(num) || 0;
+    }
+
+    function formatarMoeda(valor) {
+        return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    function alterarQty(id, delta) {
+        const input = document.getElementById(id);
+        let novoValor = parseInt(input.value) + delta;
+        if (novoValor < 0) novoValor = 0;
+        input.value = novoValor;
+        calcular();
+    }
+
+    function toggleParceria() {
+        parceriaAtiva = !parceriaAtiva;
+        document.getElementById('btnParceria').classList.toggle('active', parceriaAtiva);
+        document.getElementById('btnParceria').innerText = parceriaAtiva ? "Parceria Ativa" : "Ativar Parceria";
+        calcular();
+    }
+
+    function setAcrescimo(valor) {
+        percentualAcrescimoExtra = (percentualAcrescimoExtra === valor) ? 0 : valor;
+        document.getElementById('tag15').classList.toggle('active', percentualAcrescimoExtra === 0.15);
+        document.getElementById('tag25').classList.toggle('active', percentualAcrescimoExtra === 0.25);
+        calcular();
+    }
+
+    function calcular() {
+        // 1. Valor Base
+        let baseOriginal = converterParaNumero(document.getElementById('valorBase').value);
+        let baseCalculada = baseOriginal;
+        baseCalculada += (baseOriginal * percentualAcrescimoExtra);
+        if (parceriaAtiva) baseCalculada *= 1.15;
+
+        // 2. Serviços
+        let totalServicos = 0;
+        document.querySelectorAll('.servico-check:checked').forEach(el => {
+            totalServicos += parseFloat(el.dataset.preco);
+        });
+        // Troca de Pneus (Serviço) - R$ 1.000,00
+        totalServicos += (parseInt(document.getElementById('qtyTrocaPneu').value) * 1000);
+
+        // 3. Produtos (Cálculo individual por ID)
+        let totalKitComum = (parseInt(document.getElementById('qtyKitComum').value) * 5000);
+        let totalKitAvancado = (parseInt(document.getElementById('qtyKitAvancado').value) * 10000);
+        let totalPneusProd = (parseInt(document.getElementById('qtyPneusProd').value) * 1000);
+        let totalChave = (parseInt(document.getElementById('qtyChave').value) * 10000);
+        
+        let totalProdutos = totalKitComum + totalKitAvancado + totalPneusProd + totalChave;
+
+        // Regra de Desconto da Parceria
+        let subtotalItens = totalServicos + totalProdutos;
+        if (parceriaAtiva && subtotalItens > 0) {
+            subtotalItens = Math.max(0, subtotalItens + 2000);
+        }
+
+        let totalFinal = baseCalculada + subtotalItens;
+
+        // Atualizar Interface
+        document.getElementById('resBase').innerText = formatarMoeda(baseCalculada);
+        document.getElementById('resServicos').innerText = formatarMoeda(totalServicos);
+        document.getElementById('resProdutos').innerText = formatarMoeda(totalProdutos);
+        document.getElementById('totalFinal').innerText = formatarMoeda(totalFinal);
+    }
+</script>
+
+</body>
+</html>
