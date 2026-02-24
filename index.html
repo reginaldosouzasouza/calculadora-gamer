@@ -210,7 +210,7 @@
                 <span>Troca de Pneus <span class="label-preco">R$ 1.000,00/un</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyTrocaPneu', -1)">-</button>
-                    <input type="number" id="qtyTrocaPneu" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyTrocaPneu" class="qty-val" value="0" min="0" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyTrocaPneu', 1)">+</button>
                 </div>
             </div>
@@ -231,7 +231,7 @@
                 <span>Kit Reparo Comum <span class="label-preco">R$ 5.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyKitComum', -1)">-</button>
-                    <input type="number" id="qtyKitComum" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyKitComum" class="qty-val" value="0" min="0" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyKitComum', 1)">+</button>
                 </div>
             </div>
@@ -239,7 +239,7 @@
                 <span>Kit Avançado <span class="label-preco">R$ 10.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyKitAvancado', -1)">-</button>
-                    <input type="number" id="qtyKitAvancado" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyKitAvancado" class="qty-val" value="0" min="0" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyKitAvancado', 1)">+</button>
                 </div>
             </div>
@@ -248,7 +248,7 @@
                 <span>Pneu <span class="label-preco">R$ 1.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyPneu', -1)">-</button>
-                    <input type="number" id="qtyPneu" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyPneu" class="qty-val" value="0" min="0" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyPneu', 1)">+</button>
                 </div>
             </div>
@@ -257,7 +257,7 @@
                 <span>Chave Inglesa <span class="label-preco">R$ 10.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyChave', -1)">-</button>
-                    <input type="number" id="qtyChave" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyChave" class="qty-val" value="0" min="0" oninput="calcular()" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyChave', 1)">+</button>
                 </div>
             </div>
@@ -265,7 +265,7 @@
                 <span>Macaco Hidráulico <span class="label-preco">R$ 10.000,00</span></span>
                 <div class="controles">
                     <button class="btn-qty" onclick="alterarQty('qtyMacaco', -1)">-</button>
-                    <input type="number" id="qtyMacaco" class="qty-val" value="0" readonly>
+                    <input type="number" id="qtyMacaco" class="qty-val" value="0" min="0" oninput="calcular()">
                     <button class="btn-qty plus" onclick="alterarQty('qtyMacaco', 1)">+</button>
                 </div>
             </div>
@@ -333,13 +333,32 @@
         return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
-    function alterarQty(id, delta) {
+    /*function alterarQty(id, delta) {
         const input = document.getElementById(id);
         let novoValor = parseInt(input.value) + delta;
         if (novoValor < 0) novoValor = 0;
         input.value = novoValor;
         calcular();
+    }*/
+
+    function alterarQty(id, delta) {
+    const input = document.getElementById(id);
+    
+    // O '|| 0' evita o NaN se o campo estiver vazio ou com texto
+    let valorAtual = parseInt(input.value) || 0; 
+    
+    let novoValor = valorAtual + delta;
+    
+    // Impede que a quantidade seja menor que zero
+    if (novoValor < 0) {
+        novoValor = 0;
     }
+    
+    input.value = novoValor;
+    
+    // Executa a função de cálculo que atualiza os totais na tela
+    calcular();
+}
 
     function toggleParceria() {
         parceriaAtiva = !parceriaAtiva;
@@ -356,45 +375,47 @@
     }
 
     function calcular() {
-        let baseOriginal = converterParaNumero(document.getElementById('valorBase').value);
-        let baseParaCalculo = baseOriginal;
-        if (parceriaAtiva) baseParaCalculo *= 1.15;
+    let baseOriginal = converterParaNumero(document.getElementById('valorBase').value);
+    let baseParaCalculo = baseOriginal;
+    if (parceriaAtiva) baseParaCalculo *= 1.15;
 
-        let valorAcrescimo = baseOriginal * percentualAcrescimoExtra;
-        const linha = document.getElementById('linhaAcrescimo');
-        if (valorAcrescimo > 0) {
-            linha.style.display = 'flex';
-            document.getElementById('labelAcrescimo').innerText = `Acréscimo (${percentualAcrescimoExtra * 100}%):`;
-            document.getElementById('resAcrescimo').innerText = formatarMoeda(valorAcrescimo);
-        } else {
-            linha.style.display = 'none';
-        }
-
-        let totalServicos = 0;
-        document.querySelectorAll('.servico-check:checked').forEach(el => {
-            totalServicos += parseFloat(el.dataset.preco);
-        });
-        totalServicos += (parseInt(document.getElementById('qtyTrocaPneu').value) * 1000);
-
-        // ATUALIZAÇÃO DO CÁLCULO DE PRODUTOS INCLUINDO PNEU
-        let totalProdutos = (parseInt(document.getElementById('qtyPneu').value) * 1000) +
-                           (parseInt(document.getElementById('qtyKitComum').value) * 5000) +
-                           (parseInt(document.getElementById('qtyKitAvancado').value) * 10000) +
-                           (parseInt(document.getElementById('qtyChave').value) * 10000) +
-                           (parseInt(document.getElementById('qtyMacaco').value) * 10000);
-
-        let subtotalItens = totalServicos + totalProdutos;
-        if (parceriaAtiva && subtotalItens > 0) {
-            subtotalItens = Math.max(0, subtotalItens - 2000);
-        }
-
-        let totalFinal = baseParaCalculo + valorAcrescimo + subtotalItens;
-
-        document.getElementById('resBase').innerText = formatarMoeda(baseParaCalculo);
-        document.getElementById('resServicos').innerText = formatarMoeda(totalServicos);
-        document.getElementById('resProdutos').innerText = formatarMoeda(totalProdutos);
-        document.getElementById('totalFinal').innerText = formatarMoeda(totalFinal);
+    let valorAcrescimo = baseOriginal * percentualAcrescimoExtra;
+    const linha = document.getElementById('linhaAcrescimo');
+    if (valorAcrescimo > 0) {
+        linha.style.display = 'flex';
+        document.getElementById('labelAcrescimo').innerText = `Acréscimo (${percentualAcrescimoExtra * 100}%):`;
+        document.getElementById('resAcrescimo').innerText = formatarMoeda(valorAcrescimo);
+    } else {
+        linha.style.display = 'none';
     }
+
+    let totalServicos = 0;
+    document.querySelectorAll('.servico-check:checked').forEach(el => {
+        totalServicos += parseFloat(el.dataset.preco) || 0;
+    });
+
+    // CORREÇÃO AQUI: Adicionado "|| 0" em todos os campos para evitar NaN ao apagar
+    totalServicos += (parseInt(document.getElementById('qtyTrocaPneu').value) || 0) * 1000;
+
+    let totalProdutos = ((parseInt(document.getElementById('qtyPneu').value) || 0) * 1000) +
+                        ((parseInt(document.getElementById('qtyKitComum').value) || 0) * 5000) +
+                        ((parseInt(document.getElementById('qtyKitAvancado').value) || 0) * 10000) +
+                        ((parseInt(document.getElementById('qtyChave').value) || 0) * 10000) +
+                        ((parseInt(document.getElementById('qtyMacaco').value) || 0) * 10000);
+
+    let subtotalItens = totalServicos + totalProdutos;
+    if (parceriaAtiva && subtotalItens > 0) {
+        subtotalItens = Math.max(0, subtotalItens - 2000);
+    }
+
+    let totalFinal = baseParaCalculo + valorAcrescimo + subtotalItens;
+
+    document.getElementById('resBase').innerText = formatarMoeda(baseParaCalculo);
+    document.getElementById('resServicos').innerText = formatarMoeda(totalServicos);
+    document.getElementById('resProdutos').innerText = formatarMoeda(totalProdutos);
+    document.getElementById('totalFinal').innerText = formatarMoeda(totalFinal);
+}
+   
 </script>
 </body>
 </html>
