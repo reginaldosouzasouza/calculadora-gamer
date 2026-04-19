@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Orçamentos - South Custom</title>
+    <title>Plataforma de Orçamentos - Profissional</title>
     <style>
         :root {
             --bg-body: #0f172a;
@@ -49,15 +49,21 @@
             width: 100%;
             max-width: 1200px;
             display: flex;
-            justify-content: center;
+            align-items: center;
             padding: 20px 0;
             margin-bottom: 30px;
             border-bottom: 1px solid #334155;
         }
 
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .logo-img {
             height: 150px;
-            width: 150;
+            width: 150px;
         }
 
         h3 { margin: 0 0 15px 0; color: var(--text-dim); font-size: 1rem; }
@@ -125,13 +131,15 @@
 <body>
 
 <header>
-    <img src="southcustom.png" alt="Logo South Custom" class="logo-img">
+    <div class="header-logo">
+        <img src="southcustom.png" alt="Logo Rise Custom" class="logo-img">
+    </div>
 </header>
 
 <div class="container">
     <div class="calculadora">
         <div class="section">
-            <h3>🛒 Produtos</h3>
+            <h3>🛒 Produtos </h3>
             
             <div class="item-linha">
                 <span>Kit Reparo Comum <span class="label-preco">R$ 2.000,00</span></span>
@@ -199,6 +207,15 @@
 </footer>
 
 <script>
+    // Valores de controle (mesmo que os inputs estejam ocultos, mantemos as variáveis)
+    let parceriaAtiva = false;
+    let percentualAcrescimoExtra = 0;
+
+    function converterParaNumero(string) {
+        if (!string) return 0;
+        return parseInt(string.replace(/\D/g, "")) || 0;
+    }
+
     function formatarMoeda(valor) {
         return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
@@ -214,30 +231,25 @@
     }
 
     function calcular() {
-        // Tenta buscar o valor base, se estiver comentado assume 0
+        // SEGURANÇA: Tenta pegar o valor base, se não existir (comentado), assume 0
         const inputBase = document.getElementById('valorBase');
-        let baseOriginal = inputBase ? (parseInt(inputBase.value.replace(/\D/g, "")) || 0) : 0;
+        let baseOriginal = inputBase ? converterParaNumero(inputBase.value) : 0;
         
-        // Lógica de preços atualizada conforme os novos valores do print
-        let totalProdutos = 
-            ((parseInt(document.getElementById('qtyKitComum')?.value) || 0) * 2000) +
-            ((parseInt(document.getElementById('qtyKitAvancado')?.value) || 0) * 5000) +
-            ((parseInt(document.getElementById('qtyPneu')?.value) || 0) * 600) +
-            ((parseInt(document.getElementById('qtyChave')?.value) || 0) * 3000) +
-            ((parseInt(document.getElementById('qtyMacaco')?.value) || 0) * 1000);
+        let totalProdutos = ((parseInt(document.getElementById('qtyPneu')?.value) || 0) * 1000) +
+                           ((parseInt(document.getElementById('qtyKitComum')?.value) || 0) * 5000) +
+                           ((parseInt(document.getElementById('qtyKitAvancado')?.value) || 0) * 10000) +
+                           ((parseInt(document.getElementById('qtyChave')?.value) || 0) * 10000) +
+                           ((parseInt(document.getElementById('qtyMacaco')?.value) || 0) * 10000);
 
         let totalFinal = baseOriginal + totalProdutos;
 
-        // Atualiza os campos de texto no resumo
+        // Atualiza a tela apenas nos campos que estão visíveis
         const resProdutos = document.getElementById('resProdutos');
         if (resProdutos) resProdutos.innerText = formatarMoeda(totalProdutos);
         
         const resTotal = document.getElementById('totalFinal');
         if (resTotal) resTotal.innerText = formatarMoeda(totalFinal);
     }
-
-    // Inicia o cálculo zerado ao carregar a página
-    window.onload = calcular;
 </script>
 </body>
 </html>
