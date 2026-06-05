@@ -128,116 +128,15 @@
     <img src="southcustom.png" alt="Logo South Custom" class="logo-img">
 </header>
 
-<div class="container">
-    <div class="calculadora">
-        <div class="section">
-            <h3>🛒 Produtos</h3>
-            
-            <div class="item-linha">
-                <span>Kit Reparo Comum <span class="label-preco">R$ 2.000,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyKitComum', -1)">-</button>
-                    <input type="number" id="qtyKitComum" class="qty-val" value="0" min="0" oninput="calcular()">
-                    <button class="btn-qty plus" onclick="alterarQty('qtyKitComum', 1)">+</button>
-                </div>
-            </div>
+<br>
+<br>
+<br>
+<br>
 
-            <div class="item-linha">
-                <span>Kit Avançado <span class="label-preco">R$ 5.000,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyKitAvancado', -1)">-</button>
-                    <input type="number" id="qtyKitAvancado" class="qty-val" value="0" min="0" oninput="calcular()">
-                    <button class="btn-qty plus" onclick="alterarQty('qtyKitAvancado', 1)">+</button>
-                </div>
-            </div>
-            
-            <div class="item-linha">
-                <span>Pneu <span class="label-preco">R$ 600,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyPneu', -1)">-</button>
-                    <input type="number" id="qtyPneu" class="qty-val" value="0" min="0" oninput="calcular()">
-                    <button class="btn-qty plus" onclick="alterarQty('qtyPneu', 1)">+</button>
-                </div>
-            </div>
+<h1>
+    SITE TEMPORARIAMENTE FORA DO AR
+</h1>
 
-            <div class="item-linha">
-                <span>Chave Inglesa <span class="label-preco">R$ 3.000,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyChave', -1)">-</button>
-                    <input type="number" id="qtyChave" class="qty-val" value="0" min="0" oninput="calcular()">
-                    <button class="btn-qty plus" onclick="alterarQty('qtyChave', 1)">+</button>
-                </div>
-            </div>
 
-            <div class="item-linha">
-                <span>Macaco Hidráulico <span class="label-preco">R$ 1.000,00</span></span>
-                <div class="controles">
-                    <button class="btn-qty" onclick="alterarQty('qtyMacaco', -1)">-</button>
-                    <input type="number" id="qtyMacaco" class="qty-val" value="0" min="0" oninput="calcular()">
-                    <button class="btn-qty plus" onclick="alterarQty('qtyMacaco', 1)">+</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="resumo">
-        <h3>Resumo do Orçamento</h3>
-        <div class="resumo-item">
-            <span>Produtos:</span>
-            <span id="resProdutos">R$ 0,00</span>
-        </div>
-
-        <div class="total-label" style="margin-top:20px; font-weight:bold;">Total Final:</div>
-        <div class="total-valor" id="totalFinal">R$ 0,00</div>
-    </div>
-</div>
-
-<footer>
-    <p>Projeto Exclusivo &copy; 2026 | Desenvolvido com muita dedicação por 
-        <span class="dev-name">Reginaldo Souza</span>
-    </p>
-</footer>
-
-<script>
-    function formatarMoeda(valor) {
-        return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    }
-
-    function alterarQty(id, delta) {
-        const input = document.getElementById(id);
-        if(!input) return;
-        let valorAtual = parseInt(input.value) || 0; 
-        let novoValor = valorAtual + delta;
-        if (novoValor < 0) novoValor = 0;
-        input.value = novoValor;
-        calcular();
-    }
-
-    function calcular() {
-        // Tenta buscar o valor base, se estiver comentado assume 0
-        const inputBase = document.getElementById('valorBase');
-        let baseOriginal = inputBase ? (parseInt(inputBase.value.replace(/\D/g, "")) || 0) : 0;
-        
-        // Lógica de preços atualizada conforme os novos valores do print
-        let totalProdutos = 
-            ((parseInt(document.getElementById('qtyKitComum')?.value) || 0) * 2000) +
-            ((parseInt(document.getElementById('qtyKitAvancado')?.value) || 0) * 5000) +
-            ((parseInt(document.getElementById('qtyPneu')?.value) || 0) * 600) +
-            ((parseInt(document.getElementById('qtyChave')?.value) || 0) * 3000) +
-            ((parseInt(document.getElementById('qtyMacaco')?.value) || 0) * 1000);
-
-        let totalFinal = baseOriginal + totalProdutos;
-
-        // Atualiza os campos de texto no resumo
-        const resProdutos = document.getElementById('resProdutos');
-        if (resProdutos) resProdutos.innerText = formatarMoeda(totalProdutos);
-        
-        const resTotal = document.getElementById('totalFinal');
-        if (resTotal) resTotal.innerText = formatarMoeda(totalFinal);
-    }
-
-    // Inicia o cálculo zerado ao carregar a página
-    window.onload = calcular;
-</script>
 </body>
 </html>
